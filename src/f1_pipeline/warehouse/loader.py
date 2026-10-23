@@ -20,6 +20,9 @@ def connect(settings: SnowflakeSettings):
         "account": settings.account,
         "user": settings.user,
         "warehouse": settings.warehouse,
+        "database": settings.database,
+        "schema": settings.schema,
+        "paramstyle": "qmark",
         "autocommit": False,
     }
     if settings.role:
@@ -43,6 +46,8 @@ def _serialize_value(column_type: str, value: Any) -> Any:
         return None
     if column_type == "VARIANT":
         return json.dumps(value, separators=(",", ":"))
+    if column_type.startswith("TIMESTAMP_TZ") and isinstance(value, datetime):
+        return ("TIMESTAMP_TZ", value)
     return value
 
 
