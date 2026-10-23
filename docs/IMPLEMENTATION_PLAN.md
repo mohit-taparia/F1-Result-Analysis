@@ -95,7 +95,29 @@ Capabilities:
 - failed API calls do not silently create incomplete data
 - no secrets or machine-specific paths are committed
 
-Status: **NEXT**
+Status: **IN PROGRESS**
+
+Implemented in the first Phase 1 increment:
+
+- reusable Jolpica API client
+- custom User-Agent
+- timeout + retry/backoff handling
+- limit/offset pagination
+- normalized races, results, qualifying, driver standings, and constructor standings
+- JSON Lines local RAW output for pre-Snowflake validation
+- duplicate/required-field validation
+- CLI entry point
+- mocked unit tests
+
+Current local validation: **7 tests passing**
+
+Remaining before Phase 1 is complete:
+
+- live API smoke test against a known completed season
+- verify endpoint record counts against real Jolpica responses
+- add constructor-standings coverage and incomplete/current-season handling
+- tighten failure/partial-load behavior after live testing
+- add CI execution of the unit test suite
 
 ---
 
