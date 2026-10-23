@@ -19,7 +19,8 @@ snowflake = [
   "snowflake-connector-python>=3.12,<5",
 ]
 dbt = [
-  "dbt-snowflake>=1.12,<1.13",
+  "dbt-core==1.12.6",
+  "dbt-snowflake==1.12.4",
 ]
 
 [project.scripts]
