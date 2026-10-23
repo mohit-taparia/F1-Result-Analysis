@@ -95,7 +95,7 @@ Capabilities:
 - failed API calls do not silently create incomplete data
 - no secrets or machine-specific paths are committed
 
-Status: **IN PROGRESS**
+Status: **COMPLETE**
 
 Implemented in the first Phase 1 increment:
 
@@ -111,13 +111,18 @@ Implemented in the first Phase 1 increment:
 
 Current local validation: **7 tests passing**
 
-Remaining before Phase 1 is complete:
+Validation completed:
 
-- live API smoke test against a known completed season
-- verify endpoint record counts against real Jolpica responses
-- add constructor-standings coverage and incomplete/current-season handling
-- tighten failure/partial-load behavior after live testing
-- add CI execution of the unit test suite
+- GitHub Actions unit-test job passes
+- live Jolpica API smoke test passes against the completed 2024 season
+- the 2024 schedule contract returns all 24 race rounds
+- results and qualifying cover the expected completed-season rounds
+- driver and constructor standings validate against real API responses
+- constructor-standings normalization has dedicated unit-test coverage
+- request pacing, retry/backoff, pagination, required-field checks, and duplicate-key validation are active
+- generated RAW files remain outside source control
+
+Phase 1 is considered stable enough to become the source layer for the Snowflake RAW implementation.
 
 ---
 
@@ -335,7 +340,7 @@ Nothing is merged to `main` until:
 | Phase | Status |
 | --- | --- |
 | Repository cleanup | Complete on cleanup branch |
-| 1. Python ingestion | Next |
+| 1. Python ingestion | Complete |
 | 2. Snowflake RAW | Planned |
 | 3. dbt transformations | Planned |
 | 4. Airflow orchestration | Planned |
