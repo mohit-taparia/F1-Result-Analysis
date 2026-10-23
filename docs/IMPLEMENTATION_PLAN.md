@@ -154,7 +154,7 @@ Capabilities:
 - required fields and data types are validated
 - historical reload can be performed safely
 
-Status: **IN PROGRESS**
+Status: **COMPLETE**
 
 Implemented:
 
@@ -169,18 +169,22 @@ Implemented:
 - unit tests for DDL, merge SQL, metadata, commit/rollback, and empty-load protection
 - RAW-layer architecture/runbook documentation
 
-Local warehouse-layer validation: **7/7 tests passing**
+Local warehouse-layer validation: **8/8 tests passing**
 
-Remaining validation gate:
+Real-warehouse validation completed against Snowflake:
 
-- run against a real Snowflake account
-- bootstrap database/schema/tables with the intended role
-- load a completed season and reconcile source/target counts
-- rerun the same season and prove no duplicate business keys
-- validate data types and lineage values in Snowflake
-- add Snowflake integration validation to the release checklist
+- least-privilege `F1_PIPELINE_ROLE` connected successfully to `F1_ANALYTICS.RAW`
+- all five RAW tables bootstrapped from the Python table specifications
+- 2024 source-to-target counts reconciled: 24 races, 479 results, 479 qualifying records, 519 driver-standing records, and 240 constructor-standing records
+- all five datasets cover rounds 1–24
+- duplicate business-key checks returned zero across all five tables
+- null business-key checks returned zero across all five tables
+- `constructor_ids` verified as a Snowflake `VARIANT` containing an `ARRAY`
+- lineage metadata verified on real rows
+- a complete 2024 reload preserved the exact same table counts, proving full-season MERGE idempotency
+- failed warehouse writes roll back rather than committing partial data
 
-Phase 2 will remain **IN PROGRESS** until those real-warehouse checks pass.
+Phase 2 is complete. The RAW layer is now the validated source boundary for dbt transformations.
 
 ---
 
@@ -367,7 +371,7 @@ Nothing is merged to `main` until:
 | --- | --- |
 | Repository cleanup | Complete on cleanup branch |
 | 1. Python ingestion | Complete |
-| 2. Snowflake RAW | In progress |
+| 2. Snowflake RAW | Complete |
 | 3. dbt transformations | Planned |
 | 4. Airflow orchestration | Planned |
 | 5. ML redesign | Planned |
