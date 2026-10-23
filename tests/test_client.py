@@ -39,7 +39,7 @@ def test_iter_pages_uses_limit_and_offset():
         {"MRData": {"total": "3", "limit": "2"}},
     ]
     session = FakeSession(pages)
-    client = JolpicaClient(ApiSettings(page_size=2), session=session)
+    client = JolpicaClient(ApiSettings(page_size=2, min_request_interval_seconds=0), session=session)
 
     assert len(list(client.iter_pages("2025/results/"))) == 2
     assert session.calls[0][1] == {"limit": 2, "offset": 0}
