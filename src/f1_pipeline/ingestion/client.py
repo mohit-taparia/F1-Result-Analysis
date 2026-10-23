@@ -1,5 +1,6 @@
 from collections.abc import Iterator, Mapping
 from typing import Any
+import time
 
 import requests
 from requests.adapters import HTTPAdapter
@@ -14,6 +15,7 @@ class JolpicaClient:
     def __init__(self, settings: ApiSettings | None = None, session: requests.Session | None = None):
         self.settings = settings or ApiSettings()
         self.session = session or requests.Session()
+        self._last_request_at: float | None = None
         self.session.headers.update({"User-Agent": self.settings.user_agent, "Accept": "application/json"})
 
         retry = Retry(
@@ -31,9 +33,18 @@ class JolpicaClient:
         self.session.mount("https://", adapter)
         self.session.mount("http://", adapter)
 
+    def _pace_request(self) -> None:
+        if self._last_request_at is not None:
+            elapsed = time.monotonic() - self._last_request_at
+            remaining = self.settings.min_request_interval_seconds - elapsed
+            if remaining > 0:
+                time.sleep(remaining)
+
     def get_json(self, path: str, params: Mapping[str, Any] | None = None) -> dict[str, Any]:
         url = f"{self.settings.base_url.rstrip('/')}/{path.lstrip('/')}"
+        self._pace_request()
         response = self.session.get(url, params=params, timeout=self.settings.timeout_seconds)
+        self._last_request_at = time.monotonic()
         response.raise_for_status()
         payload = response.json()
         if "MRData" not in payload:
