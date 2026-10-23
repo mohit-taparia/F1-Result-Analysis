@@ -1,0 +1,13 @@
+# Dependencies used by the legacy notebooks.
+# The modernization branch will split runtime, development, and ML dependencies later.
+pandas
+numpy
+matplotlib
+seaborn
+requests
+beautifulsoup4
+selenium
+python-dateutil
+scikit-learn
+joblib
+jupyter
