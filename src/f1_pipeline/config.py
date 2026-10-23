@@ -9,3 +9,4 @@ class ApiSettings:
     page_size: int = 100
     max_retries: int = 3
     backoff_factor: float = 0.75
+    min_request_interval_seconds: float = 0.30
