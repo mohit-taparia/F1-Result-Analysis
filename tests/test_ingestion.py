@@ -3,7 +3,7 @@ import pytest
 from f1_pipeline.ingestion.qualifying import fetch_qualifying
 from f1_pipeline.ingestion.races import fetch_races
 from f1_pipeline.ingestion.results import fetch_results
-from f1_pipeline.ingestion.standings import fetch_driver_standings
+from f1_pipeline.ingestion.standings import fetch_constructor_standings, fetch_driver_standings
 from f1_pipeline.validation import DataValidationError, validate_records
 
 
@@ -86,3 +86,17 @@ def test_validation_rejects_duplicate_business_keys():
             required_fields=("season", "round", "driver_id"),
             unique_key=("season", "round", "driver_id"),
         )
+
+
+def test_constructor_standings_are_round_specific():
+    payload = {"MRData": {"StandingsTable": {"StandingsLists": [{
+        "season": "2025", "round": "3", "ConstructorStandings": [{
+            "position": "1", "points": "110", "wins": "4",
+            "Constructor": {"constructorId": "team_a", "name": "Team A"}
+        }]
+    }]}}}
+    client = FakeClient(payload)
+    record = fetch_constructor_standings(client, 2025, 3)[0]
+    assert client.paths == ["2025/3/constructorstandings/"]
+    assert record["constructor_id"] == "team_a"
+    assert record["points"] == 110.0
