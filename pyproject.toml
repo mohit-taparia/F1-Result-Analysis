@@ -18,6 +18,9 @@ dev = [
 snowflake = [
   "snowflake-connector-python>=3.12,<5",
 ]
+dbt = [
+  "dbt-snowflake>=1.12,<1.13",
+]
 
 [project.scripts]
 f1-ingest = "f1_pipeline.main:main"
