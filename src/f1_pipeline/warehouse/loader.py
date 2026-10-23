@@ -31,10 +31,8 @@ def connect(settings: SnowflakeSettings):
 
 def bootstrap_raw_schema(connection, settings: SnowflakeSettings) -> None:
     with connection.cursor() as cursor:
-        cursor.execute(f"CREATE DATABASE IF NOT EXISTS {quote_identifier(settings.database)}")
-        cursor.execute(
-            f"CREATE SCHEMA IF NOT EXISTS {quote_identifier(settings.database)}.{quote_identifier(settings.schema)}"
-        )
+        # Database and schema are infrastructure prerequisites. The pipeline role
+        # intentionally does not receive account-level CREATE DATABASE privileges.
         for spec in TABLE_SPECS.values():
             cursor.execute(create_table_sql(settings.database, settings.schema, spec))
     connection.commit()
