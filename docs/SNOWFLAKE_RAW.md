@@ -111,3 +111,28 @@ Expected principles:
 ## Boundary with dbt
 
 RAW intentionally does **not** convert qualifying strings, calculate driver age, shift standings for pre-race features, derive winners, or build analytics metrics. Those transformations belong in Phase 3 so they are versioned, testable SQL/dbt models rather than hidden inside ingestion code.
+
+
+## Completed real-warehouse validation
+
+Phase 2 was validated end to end against Snowflake using the completed 2024 season.
+
+| RAW table | 2024 rows | Rounds |
+| --- | ---: | ---: |
+| `RACES` | 24 | 24 |
+| `RESULTS` | 479 | 24 |
+| `QUALIFYING` | 479 | 24 |
+| `DRIVER_STANDINGS` | 519 | 24 |
+| `CONSTRUCTOR_STANDINGS` | 240 | 24 |
+
+Validation results:
+
+- zero duplicate business keys across all five tables
+- zero null business keys across all five tables
+- round coverage is 1–24 for every dataset
+- `constructor_ids` is stored as a real Snowflake `VARIANT` array
+- lineage fields are populated on loaded rows
+- a second complete 2024 load left all five row counts unchanged
+- the loader therefore behaves idempotently at the documented business-key grain
+
+These checks establish the RAW layer as the trusted input boundary for Phase 3 dbt models.
