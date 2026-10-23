@@ -154,7 +154,33 @@ Capabilities:
 - required fields and data types are validated
 - historical reload can be performed safely
 
-Status: **PLANNED**
+Status: **IN PROGRESS**
+
+Implemented:
+
+- explicit Snowflake RAW table specifications for five source datasets
+- configurable `F1_ANALYTICS.RAW` database/schema naming
+- environment-based Snowflake connection settings
+- temporary staging tables + bound batch inserts
+- business-key `MERGE` upserts for rerunnable season loads
+- `LOAD_ID`, `SOURCE`, and `LOADED_AT` lineage metadata
+- transaction rollback on failed loads
+- dedicated Snowflake loader CLI
+- unit tests for DDL, merge SQL, metadata, commit/rollback, and empty-load protection
+- RAW-layer architecture/runbook documentation
+
+Local warehouse-layer validation: **7/7 tests passing**
+
+Remaining validation gate:
+
+- run against a real Snowflake account
+- bootstrap database/schema/tables with the intended role
+- load a completed season and reconcile source/target counts
+- rerun the same season and prove no duplicate business keys
+- validate data types and lineage values in Snowflake
+- add Snowflake integration validation to the release checklist
+
+Phase 2 will remain **IN PROGRESS** until those real-warehouse checks pass.
 
 ---
 
@@ -341,7 +367,7 @@ Nothing is merged to `main` until:
 | --- | --- |
 | Repository cleanup | Complete on cleanup branch |
 | 1. Python ingestion | Complete |
-| 2. Snowflake RAW | Planned |
+| 2. Snowflake RAW | In progress |
 | 3. dbt transformations | Planned |
 | 4. Airflow orchestration | Planned |
 | 5. ML redesign | Planned |

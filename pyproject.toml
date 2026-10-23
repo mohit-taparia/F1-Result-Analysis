@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "f1-modern-data-platform"
-version = "0.1.0"
-description = "Formula 1 data ingestion foundation for analytics and machine learning"
+version = "0.2.0"
+description = "Formula 1 data engineering, machine learning, and AI analytics platform"
 requires-python = ">=3.11"
 dependencies = [
   "requests>=2.32,<3",
@@ -15,9 +15,13 @@ dependencies = [
 dev = [
   "pytest>=8,<9",
 ]
+snowflake = [
+  "snowflake-connector-python>=3.12,<5",
+]
 
 [project.scripts]
 f1-ingest = "f1_pipeline.main:main"
+f1-load-snowflake = "f1_pipeline.warehouse_main:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
@@ -25,3 +29,6 @@ where = ["src"]
 [tool.pytest.ini_options]
 pythonpath = ["src"]
 testpaths = ["tests"]
+markers = [
+  "live: integration tests that contact external services",
+]
