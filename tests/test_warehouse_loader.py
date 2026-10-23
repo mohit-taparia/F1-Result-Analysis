@@ -63,6 +63,20 @@ def test_rows_add_lineage_metadata_and_serialize_variant():
     assert "jolpica_ergast_compatible_api" in rows[0]
 
 
+def test_variant_insert_parses_json_outside_values_clause():
+    connection = FakeConnection()
+    record = {
+        "season": 2024, "round": 1, "driver_id": "verstappen", "driver_code": "VER",
+        "position": 1, "position_text": "1", "points": 26.0, "wins": 1,
+        "constructor_ids": ["red_bull"],
+    }
+    load_records(connection, settings(), "driver_standings", [record], load_id="fixed-load")
+    insert_sql, _rows = connection.batch
+    assert "PARSE_JSON(?)" not in insert_sql
+    assert "PARSE_JSON(column9)" in insert_sql
+    assert "FROM VALUES (" in insert_sql
+
+
 def test_load_records_stages_merges_and_commits():
     connection = FakeConnection()
     record = {"season": 2024, "round": 1, "race_name": "Bahrain Grand Prix", "race_date": "2024-03-02",
