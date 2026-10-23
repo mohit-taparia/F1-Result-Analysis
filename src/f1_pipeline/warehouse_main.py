@@ -53,7 +53,7 @@ def collect_season(client: JolpicaClient, season: int) -> dict[str, list[dict]]:
 def main() -> None:
     parser = argparse.ArgumentParser(description="Load a Formula 1 season into Snowflake RAW")
     parser.add_argument("--season", type=int, required=True)
-    parser.add_argument("--bootstrap", action="store_true", help="Create database/schema/tables if permitted")
+    parser.add_argument("--bootstrap", action="store_true", help="Create the five RAW tables if they do not exist")
     args = parser.parse_args()
 
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s - %(message)s")
