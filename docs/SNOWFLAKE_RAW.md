@@ -77,7 +77,9 @@ pip install -e ".[snowflake,dev]"
 f1-load-snowflake --season 2024 --bootstrap
 ```
 
-After the first successful bootstrap, normal reruns do not require `--bootstrap`.
+The database and RAW schema are infrastructure prerequisites and are created by an administrative role. `--bootstrap` creates only the five pipeline-owned RAW tables, so the runtime role does not need account-level `CREATE DATABASE` privileges.
+
+After the first successful table bootstrap, normal reruns do not require `--bootstrap`.
 
 ## Validation queries
 
