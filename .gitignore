@@ -38,3 +38,6 @@ build/
 
 # Local model/artifact outputs
 artifacts/
+
+# Generated modern-pipeline data
+data/raw/
