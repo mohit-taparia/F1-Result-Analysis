@@ -79,10 +79,17 @@ def load_records(
     loaded_at = datetime.now(timezone.utc)
     temp_name = f"tmp_{dataset}_{load_id.replace('-', '')[:12]}"
     columns = ", ".join(quote_identifier(column.name) for column in spec.columns)
-    placeholders = ", ".join(
-        "PARSE_JSON(?)" if column.snowflake_type == "VARIANT" else "?" for column in spec.columns
+    placeholders = ", ".join("?" for _ in spec.columns)
+    select_expressions = ", ".join(
+        f"PARSE_JSON(column{index})" if column.snowflake_type == "VARIANT" else f"column{index}"
+        for index, column in enumerate(spec.columns, start=1)
     )
-    insert_sql = f'INSERT INTO {quote_identifier(temp_name)} ({columns}) VALUES ({placeholders})'
+    # Snowflake does not allow PARSE_JSON(?) directly in an INSERT ... VALUES
+    # expression. Bind JSON as VARCHAR in VALUES, then parse it in the SELECT.
+    insert_sql = (
+        f'INSERT INTO {quote_identifier(temp_name)} ({columns}) '
+        f'SELECT {select_expressions} FROM VALUES ({placeholders})'
+    )
     rows = _rows_for_load(spec, records, load_id, loaded_at)
 
     try:
