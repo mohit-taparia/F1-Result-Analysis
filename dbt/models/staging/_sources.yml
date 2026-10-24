@@ -1,0 +1,27 @@
+version: 2
+
+sources:
+  - name: raw
+    description: "Source-shaped Formula 1 data loaded from the Jolpica API by the Python ingestion pipeline."
+    database: F1_ANALYTICS
+    schema: RAW
+    tables:
+      - name: races
+        identifier: RACES
+        description: "One Formula 1 race per season and round."
+
+      - name: results
+        identifier: RESULTS
+        description: "One driver's race result per season and round."
+
+      - name: qualifying
+        identifier: QUALIFYING
+        description: "One driver's qualifying result per season and round."
+
+      - name: driver_standings
+        identifier: DRIVER_STANDINGS
+        description: "Driver championship standings captured after each round."
+
+      - name: constructor_standings
+        identifier: CONSTRUCTOR_STANDINGS
+        description: "Constructor championship standings captured after each round."
