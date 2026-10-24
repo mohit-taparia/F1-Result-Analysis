@@ -1,0 +1,74 @@
+version: 2
+
+models:
+  - name: stg_races
+    description: "Cleaned race-level source data. Grain: one row per season and round."
+    columns:
+      - name: race_key
+        description: "Stable race grain key built from season and round."
+        data_tests: [not_null, unique]
+      - name: circuit_id
+        data_tests: [not_null]
+      - name: _loaded_at
+        data_tests: [not_null]
+
+  - name: stg_results
+    description: "Cleaned driver race results. Grain: one driver per race."
+    columns:
+      - name: driver_race_key
+        description: "Stable result grain key built from season, round, and driver."
+        data_tests: [not_null, unique]
+      - name: race_key
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_races')
+                field: race_key
+      - name: driver_id
+        data_tests: [not_null]
+
+  - name: stg_qualifying
+    description: "Cleaned qualifying results with Q1/Q2/Q3 lap times also expressed in milliseconds."
+    columns:
+      - name: driver_race_key
+        data_tests: [not_null, unique]
+      - name: race_key
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_races')
+                field: race_key
+      - name: driver_id
+        data_tests: [not_null]
+
+  - name: stg_driver_standings
+    description: "Driver championship standings as reported after each round. No pre-race shift is applied here."
+    columns:
+      - name: driver_standing_key
+        data_tests: [not_null, unique]
+      - name: race_key
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_races')
+                field: race_key
+      - name: driver_id
+        data_tests: [not_null]
+
+  - name: stg_constructor_standings
+    description: "Constructor championship standings as reported after each round. No pre-race shift is applied here."
+    columns:
+      - name: constructor_standing_key
+        data_tests: [not_null, unique]
+      - name: race_key
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_races')
+                field: race_key
+      - name: constructor_id
+        data_tests: [not_null]
