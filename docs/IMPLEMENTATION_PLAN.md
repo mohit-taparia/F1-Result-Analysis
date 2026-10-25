@@ -231,7 +231,24 @@ dbt tests will cover relationships, uniqueness, nullability, accepted values, an
 - transformed outputs reconcile with source data
 - pre-race features contain no post-race information
 
-Status: **PLANNED**
+Status: **IMPLEMENTED — REAL SNOWFLAKE BUILD PENDING**
+
+Implemented:
+
+- five STAGING models with normalized keys/types and lap-time conversion
+- four dimensions and four CORE fact models
+- `mart_race_features` at driver/race grain
+- prior-round championship features and prior-race driver form
+- explicit separation of historical outcome labels from model inputs
+- schema tests for uniqueness, nullability, and relationships
+- singular tests for temporal leakage and qualifying-gap business rules
+- CI `dbt parse` validation
+- Phase 3 Snowflake validation runbook
+
+Remaining gate:
+
+- execute `dbt build` against the real Snowflake RAW layer
+- reconcile resulting model counts/labels and confirm all tests pass
 
 ---
 
@@ -372,9 +389,9 @@ Nothing is merged to `main` until:
 | Repository cleanup | Complete on cleanup branch |
 | 1. Python ingestion | Complete |
 | 2. Snowflake RAW | Complete |
-| 3. dbt transformations | Planned |
+| 3. dbt transformations | Implemented; Snowflake build pending |
 | 4. Airflow orchestration | Planned |
 | 5. ML redesign | Planned |
-| 6. CI/CD | Planned |
+| 6. CI/CD | In progress |
 | 7. AI analytics | Planned |
 | Final validation | Pending |
