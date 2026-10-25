@@ -41,3 +41,6 @@ artifacts/
 
 # Generated modern-pipeline data
 data/raw/
+
+# dbt generated artifacts
+dbt/target/
