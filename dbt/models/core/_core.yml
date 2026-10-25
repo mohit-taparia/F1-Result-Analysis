@@ -1,0 +1,119 @@
+version: 2
+
+models:
+  - name: dim_driver
+    description: "Current descriptive attributes for each driver observed in race results."
+    columns:
+      - name: driver_id
+        data_tests: [not_null, unique]
+
+  - name: dim_constructor
+    description: "Current descriptive attributes for each constructor observed in race results."
+    columns:
+      - name: constructor_id
+        data_tests: [not_null, unique]
+
+  - name: dim_circuit
+    description: "Current descriptive attributes and location for each Formula 1 circuit."
+    columns:
+      - name: circuit_id
+        data_tests: [not_null, unique]
+
+  - name: dim_race
+    description: "Race dimension at one row per season and round."
+    columns:
+      - name: race_key
+        data_tests: [not_null, unique]
+      - name: circuit_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_circuit')
+                field: circuit_id
+
+  - name: fct_race_results
+    description: "Race-result fact table at one driver per race. Contains post-race outcomes and must not be used blindly as pre-race ML features."
+    columns:
+      - name: race_result_key
+        data_tests: [not_null, unique]
+      - name: race_key
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_race')
+                field: race_key
+      - name: driver_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_driver')
+                field: driver_id
+      - name: constructor_id
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('dim_constructor')
+                field: constructor_id
+
+  - name: fct_qualifying
+    description: "Qualifying fact table at one driver per race with session lap times normalized to milliseconds."
+    columns:
+      - name: qualifying_result_key
+        data_tests: [not_null, unique]
+      - name: race_key
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_race')
+                field: race_key
+      - name: driver_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_driver')
+                field: driver_id
+
+  - name: fct_driver_standings
+    description: "Driver championship standings as observed after each race. Pre-race shifting is deliberately deferred to the feature mart."
+    columns:
+      - name: driver_standing_key
+        data_tests: [not_null, unique]
+      - name: race_key
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_race')
+                field: race_key
+      - name: driver_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_driver')
+                field: driver_id
+
+  - name: fct_constructor_standings
+    description: "Constructor championship standings as observed after each race. Pre-race shifting is deliberately deferred to the feature mart."
+    columns:
+      - name: constructor_standing_key
+        data_tests: [not_null, unique]
+      - name: race_key
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_race')
+                field: race_key
+      - name: constructor_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_constructor')
+                field: constructor_id
