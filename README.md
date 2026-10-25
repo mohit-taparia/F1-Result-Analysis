@@ -2,7 +2,7 @@
 
 A Formula 1 analytics and machine-learning project built from historical race, qualifying, weather, driver-standing, and constructor-standing data.
 
-This repository began as an academic machine-learning project. The current version is being refactored into a more production-oriented data project with clearer ingestion, transformation, validation, modeling, and evaluation stages.
+This repository began as an academic machine-learning project. The active modernization branch now contains a reusable Python ingestion layer, a validated Snowflake RAW loader, dbt STAGING/CORE models, and a leakage-aware ML feature mart. Airflow orchestration, time-aware model backtesting, and AI analytics remain later phases.
 
 ## What the current project does
 
@@ -97,32 +97,29 @@ The stored report shows high overall accuracy while also showing zero precision 
 
 These limitations are retained in the legacy notebooks for transparency and will be addressed in the modernization work.
 
-## Modernization roadmap
+## Modern platform status
 
-The next version is intended to evolve this project from a notebook-based ML exercise into an end-to-end data engineering and analytics system.
+The next version is intended to evolve this project from a notebook-based ML exercise into an end-Implemented on the active modernization branch:
 
-Planned areas of improvement:
+- Jolpica API ingestion with retries, pagination, validation, and live-contract testing
+- Snowflake RAW loading for races, results, qualifying, driver standings, and constructor standings
+- rerunnable business-key MERGE loads with lineage metadata and rollback protection
+- dbt STAGING models for source cleanup and type normalization
+- dbt CORE dimensions/facts for reusable Formula 1 entities
+- `mart_race_features` with prior-round standings and prior-race form to reduce temporal leakage
+- automated Python tests, live API smoke tests, dbt parsing, and Python linting in CI
 
-- replace the retired Ergast host with the maintained Jolpica F1 API
-- separate ingestion, transformation, feature engineering, training, and inference into reusable Python modules
-- introduce a warehouse-oriented RAW / STAGING / MART data model
-- implement SQL/dbt transformations and automated data-quality tests
-- use incremental ingestion instead of rebuilding historical datasets
-- orchestrate ingestion, transformation, testing, and model runs
-- implement season-based and rolling-window backtesting to prevent temporal leakage
-- evaluate ranking metrics and race-winner accuracy rather than relying on imbalanced binary accuracy
-- add CI checks for Python, SQL, and data-model changes
-- expose curated F1 data through an analytics or AI interface
+Still pending:
 
-See the project roadmap in this README for proposed architecture options before those components are implemented.
+- real Snowflake `dbt build` validation of the Phase 3 models
+- Airflow orchestration
+- time-aware ML training/backtesting and race-level evaluation
+- prediction persistence
+- governed AI/natural-language analytics
 
-## Proposed target architecture
+See `docs/IMPLEMENTATION_PLAN.md` and `docs/DBT_TRANSFORMATIONS.md` for the detailed architecture and validation gates.
 
-One possible modernization path is:
-
-```text
-Jolpica F1 API
-      |
+ |
       v
 Python ingestion
       |
@@ -147,7 +144,7 @@ prediction table
 AI / natural-language analytics layer
 ```
 
-This architecture is a **target design**, not a description of the current implementation.
+The ingestion, Snowflake RAW, and dbt layers shown above are implemented on the active modernization branch; downstream orchestration, ML backtesting, predictions, and AI analytics remain target components.
 
 ## Running the legacy project
 
@@ -177,7 +174,10 @@ The academic write-up is retained in `final_project.pdf` and `final_project.tex`
 ## Status
 
 **Legacy implementation:** preserved  
-**Repository cleanup:** in progress  
-**Modern data-engineering rebuild:** planned
+**Repository cleanup:** complete on the modernization branch  
+**Python ingestion:** implemented and CI-validated  
+**Snowflake RAW:** implemented and warehouse-validated  
+**dbt transformations:** implemented; real Snowflake build pending  
+**Airflow / ML redesign / AI analytics:** pending
 
 The goal of the rebuild is not simply to increase a model accuracy number. It is to create a reproducible data platform that demonstrates ingestion, transformation, data quality, orchestration, ML evaluation, and AI-enabled analytics on Formula 1 data.
