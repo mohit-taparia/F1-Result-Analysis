@@ -1,0 +1,55 @@
+version: 2
+
+models:
+  - name: mart_race_features
+    description: >
+      Pre-race machine-learning feature table at one driver per race after
+      qualifying. Championship features use only the previous round and form
+      features use only prior race results. Outcome columns are labels for
+      historical training/evaluation and must not be used as model inputs.
+    columns:
+      - name: driver_race_key
+        description: "Unique driver-race key."
+        data_tests: [not_null, unique]
+
+      - name: race_key
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_race')
+                field: race_key
+
+      - name: driver_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_driver')
+                field: driver_id
+
+      - name: constructor_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_constructor')
+                field: constructor_id
+
+      - name: qualifying_position
+        data_tests: [not_null]
+
+      - name: prior_races_used
+        description: "Number of prior driver results used in the three-race form window."
+
+      - name: driver_standings_through_round
+        description: "Latest championship round used for driver features; must always be earlier than the predicted race."
+
+      - name: constructor_standings_through_round
+        description: "Latest championship round used for constructor features; must always be earlier than the predicted race."
+
+      - name: is_winner
+        description: "Historical target label. Null when the race outcome is not yet available; never a model input."
+
+      - name: actual_finish_position
+        description: "Historical evaluation label only; never a model input."
