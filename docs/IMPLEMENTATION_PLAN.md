@@ -261,6 +261,33 @@ Phase 3 is complete. The next data prerequisite for meaningful time-aware ML is 
 
 ---
 
+## Historical backfill milestone
+
+**Goal:** expand the validated modern warehouse from the 2024 proof season to a multi-season dataset suitable for time-aware ML.
+
+Initial validation range: **2010–2024 inclusive**.
+
+Implemented command:
+
+```bash
+f1-backfill-snowflake --start-season 2010 --end-season 2024
+```
+
+The command reuses the validated single-season collection, source validation, and Snowflake business-key MERGE logic. Seasons are processed in ascending order rather than accumulated in memory. Each dataset MERGE commits independently; if a later request or dataset fails, already committed data remains intact and the idempotent MERGE design allows the range to be rerun safely.
+
+**Validation gate**
+
+- every requested season has usable races, results, qualifying, driver standings, and constructor standings
+- RAW business keys remain unique across the historical range
+- rerunning the same range does not increase logical row counts
+- dbt STAGING/CORE/MART rebuild successfully over the historical data
+- MART grain and temporal-leakage tests continue to pass
+- historical coverage is inspected before choosing ML train/test windows
+
+Status: **IMPLEMENTED — REAL BACKFILL PENDING**
+
+---
+
 ## Phase 4 — Orchestration
 
 **Goal:** coordinate ingestion, warehouse loading, dbt transformations, tests, and prediction jobs.
