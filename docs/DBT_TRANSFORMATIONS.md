@@ -88,7 +88,7 @@ dbt parse --project-dir dbt --profiles-dir .github/dbt --no-partial-parse
 
 This validates dbt project structure/Jinja/model dependencies only. It does **not** execute models in Snowflake.
 
-## Real Snowflake validation gate
+## Real Snowflake validation
 
 Create a local dbt profile that points to the same Snowflake account/database containing the validated RAW tables. The target schema is the developer schema used for this validation; dbt will create its configured STAGING/CORE/MART derived schemas according to `dbt_project.yml`.
 
@@ -103,15 +103,16 @@ Do not use `.github/dbt/profiles.yml` for the real build; that profile intention
 
 ## Acceptance checks
 
-Phase 3 is complete only when:
+Phase 3 has passed its real Snowflake acceptance gate:
 
-1. `dbt debug` confirms the Snowflake connection.
-2. `dbt build` completes successfully.
-3. All dbt schema and singular tests pass.
-4. `mart_race_features` contains one unique row per qualifying driver/race.
-5. No current/future-round standings appear in the feature mart.
-6. Historical labels reconcile to race results.
-7. A rerun produces the same logical output.
+1. `dbt debug` confirmed the Snowflake connection.
+2. STAGING, CORE, and MART builds completed successfully.
+3. Applicable dbt schema and singular tests passed.
+4. `mart_race_features` contains 479 rows and 479 unique driver/race keys.
+5. Explicit standings leakage checks returned zero violations.
+6. Historical labels reconcile to 24 races and exactly 24 winners.
+7. Prior-race finish validation checked 479 rows with zero mismatches.
+8. An unchanged MART rebuild again passed all 13 checks.
 
 Useful reconciliation queries:
 
@@ -141,4 +142,4 @@ WHERE DRIVER_STANDINGS_THROUGH_ROUND >= ROUND
 
 ## Gate to later phases
 
-Airflow and ML implementation should not be treated as validated downstream work until this real Snowflake `dbt build` gate passes.
+The real Snowflake `dbt build` gate has passed. Before meaningful ML training/backtesting, the modern warehouse still needs a multi-season historical backfill; current real-warehouse validation uses 2024 data.
