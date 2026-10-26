@@ -231,7 +231,7 @@ dbt tests will cover relationships, uniqueness, nullability, accepted values, an
 - transformed outputs reconcile with source data
 - pre-race features contain no post-race information
 
-Status: **IMPLEMENTED — REAL SNOWFLAKE BUILD PENDING**
+Status: **COMPLETE — REAL SNOWFLAKE VALIDATED**
 
 Implemented:
 
@@ -245,10 +245,19 @@ Implemented:
 - CI `dbt parse` validation
 - Phase 3 Snowflake validation runbook
 
-Remaining gate:
+Real Snowflake validation completed:
 
-- execute `dbt build` against the real Snowflake RAW layer
-- reconcile resulting model counts/labels and confirm all tests pass
+- STAGING: 5 models built successfully with 24 applicable tests passing; row counts exactly reconcile to RAW (24 races, 479 results, 479 qualifying, 519 driver standings, 240 constructor standings)
+- CORE: 8 models built successfully with 43 applicable tests passing; fact row counts exactly reconcile to STAGING
+- CORE winner-label validation confirmed 24 races, 24 winners, and exactly one winner per race
+- MART: `mart_race_features` built successfully with 13 applicable tests passing
+- MART grain validation confirmed 479 rows and 479 unique driver/race keys across 24 races
+- historical labels reconcile to 24 winners and 479 populated finish positions
+- explicit temporal-leakage checks returned zero violations for current-round standings, incorrect prior-round standings, and round-1 same-season standings
+- prior-race form validation checked all 479 rows with zero `previous_finish_position` mismatches
+- an unchanged MART rebuild again passed all 13 checks, confirming reproducible logical output
+
+Phase 3 is complete. The next data prerequisite for meaningful time-aware ML is a multi-season historical backfill; the currently validated modern warehouse contains the 2024 season.
 
 ---
 
@@ -389,7 +398,7 @@ Nothing is merged to `main` until:
 | Repository cleanup | Complete on cleanup branch |
 | 1. Python ingestion | Complete |
 | 2. Snowflake RAW | Complete |
-| 3. dbt transformations | Implemented; Snowflake build pending |
+| 3. dbt transformations | Complete — real Snowflake validated |
 | 4. Airflow orchestration | Planned |
 | 5. ML redesign | Planned |
 | 6. CI/CD | In progress |
