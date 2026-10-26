@@ -1,6 +1,8 @@
 -- Run with a Snowflake administrative role before the first real dbt build.
--- This grants the existing pipeline role only the privileges needed for
--- dbt-managed STAGING, CORE, and MART objects.
+-- This grants the existing pipeline role the privileges needed for
+-- dbt-managed STAGING, CORE, and MART objects. dbt performs CREATE SCHEMA
+-- IF NOT EXISTS during relation creation, so CREATE SCHEMA is required on
+-- the database even when the target schemas already exist.
 
 USE ROLE ACCOUNTADMIN;
 
@@ -8,7 +10,7 @@ CREATE SCHEMA IF NOT EXISTS F1_ANALYTICS.STAGING;
 CREATE SCHEMA IF NOT EXISTS F1_ANALYTICS.CORE;
 CREATE SCHEMA IF NOT EXISTS F1_ANALYTICS.MART;
 
-GRANT USAGE ON DATABASE F1_ANALYTICS TO ROLE F1_PIPELINE_ROLE;
+GRANT USAGE, CREATE SCHEMA ON DATABASE F1_ANALYTICS TO ROLE F1_PIPELINE_ROLE;
 
 GRANT USAGE ON SCHEMA F1_ANALYTICS.RAW TO ROLE F1_PIPELINE_ROLE;
 GRANT SELECT ON ALL TABLES IN SCHEMA F1_ANALYTICS.RAW TO ROLE F1_PIPELINE_ROLE;
