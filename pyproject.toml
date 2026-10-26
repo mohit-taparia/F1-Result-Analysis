@@ -27,6 +27,7 @@ dbt = [
 [project.scripts]
 f1-ingest = "f1_pipeline.main:main"
 f1-load-snowflake = "f1_pipeline.warehouse_main:main"
+f1-backfill-snowflake = "f1_pipeline.backfill_main:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
