@@ -1,0 +1,18 @@
+# Local dbt profile template.
+# Copy this file outside the repository (for example to ~/.dbt/profiles.yml)
+# or point --profiles-dir at a private local directory.
+#
+# Credentials remain in environment variables and must never be committed.
+f1_analytics:
+  target: dev
+  outputs:
+    dev:
+      type: snowflake
+      account: "{{ env_var('SNOWFLAKE_ACCOUNT') }}"
+      user: "{{ env_var('SNOWFLAKE_USER') }}"
+      password: "{{ env_var('SNOWFLAKE_PASSWORD') }}"
+      role: "{{ env_var('SNOWFLAKE_ROLE') }}"
+      warehouse: "{{ env_var('SNOWFLAKE_WAREHOUSE') }}"
+      database: "{{ env_var('SNOWFLAKE_DATABASE', 'F1_ANALYTICS') }}"
+      schema: STAGING
+      threads: 4
