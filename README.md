@@ -111,7 +111,6 @@ The next version is intended to evolve this project from a notebook-based ML exe
 
 Still pending:
 
-- real Snowflake `dbt build` validation of the Phase 3 models
 - Airflow orchestration
 - time-aware ML training/backtesting and race-level evaluation
 - prediction persistence
@@ -177,7 +176,7 @@ The academic write-up is retained in `final_project.pdf` and `final_project.tex`
 **Repository cleanup:** complete on the modernization branch  
 **Python ingestion:** implemented and CI-validated  
 **Snowflake RAW:** implemented and warehouse-validated  
-**dbt transformations:** implemented; real Snowflake build pending  
+**dbt transformations:** implemented and real-Snowflake validated  
 **Airflow / ML redesign / AI analytics:** pending
 
 The goal of the rebuild is not simply to increase a model accuracy number. It is to create a reproducible data platform that demonstrates ingestion, transformation, data quality, orchestration, ML evaluation, and AI-enabled analytics on Formula 1 data.
